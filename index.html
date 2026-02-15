@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SAR Shield · AI-Powered Suspicious Activity Reports</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Tailwind + Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #030712;
+            color: #f8fafc;
+        }
+        
+        /* Cyan glow background */
+        .bg-premium {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        /* Glass navigation */
+        .nav-glass {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Glass cards */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            border-radius: 24px;
+            padding: 30px;
+        }
+        
+        .feature-card:hover {
+            border-color: rgba(6, 182, 212, 0.3);
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(6, 182, 212, 0.2);
+        }
+        
+        /* Gradient button */
+        .btn-gradient {
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            color: #f8fafc;
+            transition: all 0.3s;
+            border: none;
+        }
+        
+        .btn-gradient:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.3);
+        }
+        
+        /* Outline button */
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
+        
+        .btn-outline:hover {
+            border-color: #06b6d4;
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        /* Stats styling */
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            color: #4b5563;
+            font-size: 0.875rem;
+            letter-spacing: 0.02em;
+        }
+        
+        /* Badge */
+        .compliance-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            color: #94a3b8;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #f8fafc, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .gradient-cyan-violet {
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        /* Tag styling */
+        .tech-tag {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        
+        /* Team member styling */
+        .team-icon {
+            border: 2px solid rgba(6, 182, 212, 0.2);
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .team-member:hover .team-icon {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+        
+        /* Section headers */
+        .section-header {
+            color: #f8fafc;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+        
+        .section-subheader {
+            color: #4b5563;
+        }
+        
+        /* Flow arrow */
+        .flow-arrow {
+            color: #4b5563;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background with cyan/violet glow -->
+<div class="bg-premium"></div>
+
+<!-- Navigation -->
+<nav class="nav-glass fixed w-full z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <!-- Your Logo Image -->
+            <img src="Sar_logo.png" alt="SAR Shield Logo" class="w-8 h-8 object-contain">
+            <span class="text-lg font-medium tracking-tight text-[#f8fafc]">SAR<span class="text-[#94a3b8]">Shield</span></span>
+        </div>        
+        <div class="flex items-center gap-8">
+            <a href="#features" class="text-sm text-[#94a3b8] hover:text-[#f8fafc] transition">Features</a>
+            <a href="#about" class="text-sm text-[#94a3b8] hover:text-[#f8fafc] transition">About</a>
+            <a href="#team" class="text-sm text-[#94a3b8] hover:text-[#f8fafc] transition">Team</a>
+            <a href="login.html" class="text-sm text-[#94a3b8] hover:text-[#f8fafc] transition">Login</a>
+            <a href="register.html" class="btn-gradient px-5 py-2 rounded-xl text-sm font-medium flex items-center gap-2">
+                <i class="fa-regular fa-file-lines"></i>Generate SAR
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="min-h-screen flex items-center justify-center px-6 pt-20">
+    <div class="max-w-5xl mx-auto text-center" data-aos="fade-up">
+        <div class="compliance-badge">
+            <i class="fa-regular fa-shield mr-2"></i>
+            Fincen Compliant · Audit-Ready AI
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            From <span class="gradient-cyan-violet">6 Hours</span> to<br>
+            <span class="gradient-text">6 Minutes</span>
+        </h1>
+        
+        <p class="text-[#94a3b8] text-xl max-w-3xl mx-auto mb-10 font-light">
+            Generate regulator-ready Suspicious Activity Reports with full audit trails. 
+            Every decision logged, every source cited.
+        </p>
+        
+        <div class="flex gap-4 justify-center mb-16">
+            <a href="dashboard.html" class="btn-gradient px-8 py-4 rounded-xl font-medium flex items-center gap-2">
+                <i class="fa-solid fa-robot"></i>
+                Try  NOW
+            </a>
+            <a href="#features" class="btn-outline px-8 py-4 rounded-xl font-medium flex items-center gap-2">
+                <i class="fa-regular fa-circle-play"></i>
+                See How It Works
+            </a>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div class="stat-item">
+                <div class="stat-number">5-6hrs</div>
+                <div class="stat-label">TIME SAVED PER SAR</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">AUDIT TRAIL</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">47</div>
+                <div class="stat-label">AML TEMPLATES</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-32 px-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="section-header mb-4">Why Compliance Teams Choose SAR Shield</h2>
+            <p class="section-subheader max-w-2xl mx-auto">Three pillars of regulatory-grade AI</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Feature 1: Audit Trail -->
+            <div class="feature-card" data-aos="fade-up">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#06b6d4]/20 to-[#8b5cf6]/20 rounded-2xl flex items-center justify-center mb-6 border border-[#06b6d4]/20">
+                    <i class="fa-regular fa-clock text-[#06b6d4] text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-[#f8fafc] mb-3">Complete Audit Trail</h3>
+                <p class="text-[#94a3b8] text-sm leading-relaxed mb-4">
+                    Every prompt, template, and model output stored with LangChain callbacks. Tamper-proof hash chaining.
+                </p>
+                <div class="flex gap-2">
+                    <span class="tech-tag">Explainability</span>
+                    <span class="tech-tag">Fincen Ready</span>
+                </div>
+            </div>
+            
+            <!-- Feature 2: RAG Pipeline -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#06b6d4]/20 to-[#8b5cf6]/20 rounded-2xl flex items-center justify-center mb-6 border border-[#8b5cf6]/20">
+                    <i class="fa-regular fa-folder-open text-[#8b5cf6] text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-[#f8fafc] mb-3">RAG + ChromaDB</h3>
+                <p class="text-[#94a3b8] text-sm leading-relaxed mb-4">
+                    Retrieves relevant SAR templates and AML guidelines before generation. No generic outputs.
+                </p>
+                <div class="flex gap-2">
+                    <span class="tech-tag">47 Templates</span>
+                    <span class="tech-tag">Vector Search</span>
+                </div>
+            </div>
+            
+            <!-- Feature 3: Human Review -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-14 h-14 bg-gradient-to-br from-[#06b6d4]/20 to-[#8b5cf6]/20 rounded-2xl flex items-center justify-center mb-6 border border-[#06b6d4]/20">
+                    <i class="fa-regular fa-pen-to-square text-[#06b6d4] text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-[#f8fafc] mb-3">Human-in-the-Loop</h3>
+                <p class="text-[#94a3b8] text-sm leading-relaxed mb-4">
+                    Generate, edit, approve. Full version control with analyst review before final submission.
+                </p>
+                <div class="flex gap-2">
+                    <span class="tech-tag">Version Control</span>
+                    <span class="tech-tag">Approval Flow</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section - The 47 Accounts Example -->
+<section id="about" class="py-32 px-6">
+    <div class="max-w-5xl mx-auto">
+        <div class="feature-card p-12" data-aos="fade-right">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-[#06b6d4]/20 to-[#8b5cf6]/20 rounded-xl flex items-center justify-center border border-[#06b6d4]/20">
+                    <i class="fa-regular fa-file-lines text-[#06b6d4]"></i>
+                </div>
+                <span class="text-[#94a3b8] font-medium text-sm">REAL SCENARIO</span>
+            </div>
+            
+            <h3 class="text-3xl font-bold text-[#f8fafc] mb-6">The 47 Accounts Case</h3>
+            
+            <div class="bg-[#030712] border border-[#06b6d4]/20 rounded-2xl p-6 mb-8">
+                <p class="text-[#94a3b8] text-lg mb-4">
+                    "Customer receives <span class="text-[#f8fafc] font-semibold">₹50 lakhs</span> from <span class="text-[#f8fafc] font-semibold">47 different accounts</span> in one week, then immediately transfers it abroad."
+                </p>
+                <div class="flex gap-3 flex-wrap">
+                    <span class="tech-tag border-[#06b6d4]/20">Pattern: Rapid Movement</span>
+                    <span class="tech-tag border-[#8b5cf6]/20">Risk: HIGH</span>
+                    <span class="tech-tag border-[#06b6d4]/20">Typology: Layering</span>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-xl p-5">
+                    <h4 class="font-medium mb-2 flex items-center gap-2 text-[#94a3b8]">
+                        <i class="fa-regular fa-clock"></i>
+                        Without SAR Shield
+                    </h4>
+                    <p class="text-[#4b5563] text-sm">Analyst spends 5-6 hours manually drafting narrative, linking patterns, ensuring compliance.</p>
+                </div>
+                <div class="bg-gradient-to-br from-[#06b6d4]/5 to-[#8b5cf6]/5 border border-[#06b6d4]/20 rounded-xl p-5">
+                    <h4 class="font-medium mb-2 flex items-center gap-2 text-[#f8fafc]">
+                        <i class="fa-regular fa-clock text-[#06b6d4]"></i>
+                        With SAR Shield
+                    </h4>
+                    <p class="text-[#94a3b8] text-sm">6 minutes generation with full audit trail, pattern matching, and regulator-ready formatting.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tech Stack Section -->
+<section class="py-32 px-6">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="section-header mb-4">Enterprise Stack</h2>
+            <p class="section-subheader">Built on proven, open-source technology</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-2xl p-4 text-center hover:border-[#06b6d4]/30 transition">
+                <div class="text-[#f8fafc] font-medium mb-1">LLM</div>
+                <div class="text-sm text-[#94a3b8]">Llama 3.1 8B</div>
+            </div>
+            <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-2xl p-4 text-center hover:border-[#8b5cf6]/30 transition">
+                <div class="text-[#f8fafc] font-medium mb-1">Framework</div>
+                <div class="text-sm text-[#94a3b8]">LangChain</div>
+            </div>
+            <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-2xl p-4 text-center hover:border-[#06b6d4]/30 transition">
+                <div class="text-[#f8fafc] font-medium mb-1">Vector DB</div>
+                <div class="text-sm text-[#94a3b8]">ChromaDB</div>
+            </div>
+            <div class="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] rounded-2xl p-4 text-center hover:border-[#8b5cf6]/30 transition">
+                <div class="text-[#f8fafc] font-medium mb-1">Database</div>
+                <div class="text-sm text-[#94a3b8]">MySQL</div>
+            </div>
+        </div>
+        
+        <div class="flex justify-center items-center gap-2 mt-12 text-xs">
+            <span class="text-[#4b5563]">CSV/JSON</span>
+            <i class="fa-solid fa-arrow-right text-[#4b5563]"></i>
+            <span class="text-[#4b5563]">Risk Engine</span>
+            <i class="fa-solid fa-arrow-right text-[#4b5563]"></i>
+            <span class="text-[#4b5563]">MySQL</span>
+            <i class="fa-solid fa-arrow-right text-[#4b5563]"></i>
+            <span class="text-[#4b5563]">ChromaDB</span>
+            <i class="fa-solid fa-arrow-right text-[#4b5563]"></i>
+            <span class="text-[#4b5563]">LLM</span>
+            <i class="fa-solid fa-arrow-right text-[#4b5563]"></i>
+            <span class="text-[#4b5563]">Audit Log</span>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section id="team" class="py-32 px-6">
+    <div class="max-w-7xl mx-auto text-center">
+        <h2 class="section-header mb-4">The Team</h2>
+        <p class="section-subheader mb-16">Building the future of compliance automation</p>
+        
+        <div class="flex flex-wrap justify-center gap-16">
+            <!-- Team Member 1 -->
+            <div class="team-member">
+                <div class="w-32 h-32 mx-auto mb-4 relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#06b6d4] to-[#8b5cf6] rounded-full opacity-0 team-member:hover:opacity-20 transition-opacity duration-300"></div>
+                    <div class="absolute inset-1 team-icon rounded-full flex items-center justify-center">
+                        <i class="fa-regular fa-user text-4xl text-[#94a3b8]"></i>
+                    </div>
+                </div>
+                <h4 class="font-medium text-[#f8fafc]">Kaustubh Nagavekar</h4>
+                <p class="text-sm text-[#4b5563]">UI & Frontend Lead</p>
+            </div>
+            
+            <!-- Team Member 2 -->
+            <div class="team-member">
+                <div class="w-32 h-32 mx-auto mb-4 relative">
+                    <div class="absolute inset-0 bg-gradient-to-br from-[#06b6d4] to-[#8b5cf6] rounded-full opacity-0 team-member:hover:opacity-20 transition-opacity duration-300"></div>
+                    <div class="absolute inset-1 team-icon rounded-full flex items-center justify-center">
+                        <i class="fa-regular fa-user text-4xl text-[#94a3b8]"></i>
+                    </div>
+                </div>
+                <h4 class="font-medium text-[#f8fafc]">Sanket Gudade</h4>
+                <p class="text-sm text-[#4b5563]">AI & Backend Lead</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="py-8 border-t border-[rgba(255,255,255,0.05)] text-center">
+    <p class="text-xs text-[#4b5563]">© 2026 SAR Shield · Compliance-Grade AI · Built for Hackathon</p>
+</footer>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init({ once: true, duration: 800 });
+</script>
+
+</body>
+</html>
