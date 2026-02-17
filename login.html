@@ -58,6 +58,8 @@
             padding: 14px;
             font-weight: 600;
             transition: 0.3s;
+            color: white;
+            width: 100%;
         }
 
         .btn-gradient:hover {
@@ -65,17 +67,26 @@
             box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
-            padding: 12px;
-            transition: 0.3s;
+        .role-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
         }
 
-        .btn-outline:hover {
+        .role-btn:hover {
             border-color: #06b6d4;
-            background: rgba(255, 255, 255, 0.02);
+            background: rgba(6, 182, 212, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .role-btn.selected {
+            border-color: #06b6d4;
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(139, 92, 246, 0.1));
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
         }
     </style>
 </head>
@@ -84,52 +95,48 @@
 <div class="bg-premium"></div>
 
 <div class="min-h-screen flex items-center justify-center px-6">
-
     <div class="glass-card w-full max-w-md p-10 shadow-2xl">
 
         <!-- Logo -->
         <div class="text-center mb-8">
             <div class="flex justify-center items-center gap-3 mb-4">
-                            <img src="Sar_logo.png" alt="SAR Shield Logo" class="w-14 h-14 object-contain">
-
+                <img src="Sar_logo.png" alt="SAR Shield Logo" class="w-14 h-14 object-contain">
                 <span class="text-xl font-semibold">SAR<span class="text-[#94a3b8]">Shield</span></span>
             </div>
             <h2 class="text-2xl font-bold">Welcome Back</h2>
-            <p class="text-[#94a3b8] text-sm mt-2">Sign in to access your compliance dashboard</p>
+            <p class="text-[#94a3b8] text-sm mt-2">Select your role to continue</p>
+        </div>
+
+        <!-- Role Selection -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div id="role-analyst" class="role-btn" onclick="selectRole('analyst')">
+                <i class="fa-solid fa-user text-3xl text-[#06b6d4] mb-2"></i>
+                <h3 class="font-semibold">Analyst</h3>
+                <p class="text-xs text-[#94a3b8]">Generate SARs</p>
+            </div>
+            <div id="role-admin" class="role-btn" onclick="selectRole('admin')">
+                <i class="fa-solid fa-shield-halved text-3xl text-[#8b5cf6] mb-2"></i>
+                <h3 class="font-semibold">Admin</h3>
+                <p class="text-xs text-[#94a3b8]">Review & Approve</p>
+            </div>
         </div>
 
         <!-- Login Form -->
-        <form onsubmit="event.preventDefault(); window.location.href='dashboard.html'">
-
+        <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="mb-5">
                 <label class="block text-sm text-[#94a3b8] mb-2">Email Address</label>
-                <input type="email" class="input-field" placeholder="analyst@bank.com" required>
+                <input type="email" id="email" class="input-field" placeholder="analyst@bank.com" required value="analyst@bank.com">
             </div>
 
             <div class="mb-6">
                 <label class="block text-sm text-[#94a3b8] mb-2">Password</label>
-                <input type="password" class="input-field" placeholder="Enter your password" required>
+                <input type="password" id="password" class="input-field" placeholder="Enter your password" required value="password123">
             </div>
 
-            <button type="submit" class="btn-gradient w-full text-white">
+            <button type="submit" class="btn-gradient">
                 <i class="fa-solid fa-arrow-right mr-2"></i> Sign In
             </button>
         </form>
-
-        <!-- Divider -->
-        <div class="text-center text-xs text-[#4b5563] my-6">
-            OR QUICK ACCESS
-        </div>
-
-        <!-- Role Buttons -->
-        <div class="grid grid-cols-2 gap-4">
-            <button onclick="window.location.href='dashboard.html'" class="btn-outline text-sm">
-                <i class="fa-solid fa-user mr-2"></i> Analyst
-            </button>
-            <button onclick="window.location.href='Admin_dashboard.html'" class="btn-outline text-sm">
-                <i class="fa-solid fa-shield-halved mr-2"></i> Admin
-            </button>
-        </div>
 
         <!-- Back -->
         <div class="text-center mt-8 text-xs text-[#4b5563]">
@@ -140,6 +147,59 @@
 
     </div>
 </div>
+<script>
+    let selectedRole = 'analyst';
 
+    function selectRole(role) {
+        selectedRole = role;
+        document.getElementById('role-analyst').classList.remove('selected');
+        document.getElementById('role-admin').classList.remove('selected');
+        document.getElementById(`role-${role}`).classList.add('selected');
+
+        const emailInput = document.getElementById('email');
+        if(role === 'admin') {
+            emailInput.placeholder = "admin@bank.com";
+            emailInput.value = "admin@bank.com";
+        } else {
+            emailInput.placeholder = "analyst@bank.com";
+            emailInput.value = "analyst@bank.com";
+        }
+    }
+
+    function handleLogin(event) {
+        event.preventDefault();
+
+        const user = {
+            name: selectedRole === 'analyst' ? 'John Doe' : 'Sarah Chen',
+            email: document.getElementById('email').value,
+            role: selectedRole,
+            permissions: selectedRole === 'admin' ? ['review', 'approve', 'reject', 'audit'] : ['create', 'edit', 'submit'],
+            loginTime: new Date().toISOString()
+        };
+        localStorage.setItem('currentUser', JSON.stringify(user));
+
+        logAction(`${selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)} Session Started`);
+
+        // Redirect using relative paths
+        if (selectedRole === 'analyst') {
+            window.location.href = './analyst-dashboard.html';
+        } else if (selectedRole === 'admin') {
+            window.location.href = './admin_dashboard.html';
+        }
+    }
+
+    function logAction(action) {
+        const logs = JSON.parse(localStorage.getItem('auditLogs')) || [];
+        logs.unshift({
+            timestamp: new Date().toLocaleString(),
+            user: selectedRole === 'analyst' ? 'John Doe (Analyst)' : 'Sarah Chen (Admin)',
+            action: action,
+            status: 'Success'
+        });
+        localStorage.setItem('auditLogs', JSON.stringify(logs.slice(0, 50)));
+    }
+
+    document.getElementById('role-analyst').classList.add('selected');
+</script>
 </body>
 </html>

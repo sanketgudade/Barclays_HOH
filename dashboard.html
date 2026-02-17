@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Case Details · SAR Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #030712;
+            color: #f8fafc;
+        }
+        
+        .bg-premium {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
+        .nav-glass {
+            background: rgba(3, 7, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 500;
+            transition: 0.3s;
+            color: white;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 24px;
+            transition: 0.3s;
+            color: #94a3b8;
+        }
+        
+        .btn-outline:hover {
+            border-color: #06b6d4;
+            color: #f8fafc;
+        }
+        
+        .sar-textarea {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            color: #f8fafc;
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Inter', monospace;
+            line-height: 1.6;
+        }
+        
+        .sar-textarea:focus {
+            outline: none;
+            border-color: #06b6d4;
+        }
+        
+        .risk-high { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .risk-medium { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .risk-low { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
+        
+        .loader {
+            border: 3px solid rgba(6, 182, 212, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #06b6d4;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-premium"></div>
+
+<!-- Navigation -->
+<nav class="nav-glass fixed w-full z-50 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="Sar_logo.png" alt="SAR Shield Logo" class="w-8 h-8 object-contain">
+            <span class="text-lg font-medium">SAR<span class="text-[#94a3b8]">Shield</span></span>
+        </div>
+        <div class="flex items-center gap-6">
+            <span class="text-sm text-[#94a3b8]">
+                <i class="fa-regular fa-user mr-2"></i>Analyst: John Doe
+            </span>
+            <a href="dashboard.html" class="text-sm text-[#94a3b8] hover:text-[#f8fafc] transition">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="pt-24 px-6 pb-16">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Case Header -->
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <h1 class="text-3xl font-bold" id="caseId">Case C101</h1>
+                    <span class="px-3 py-1 rounded-full text-xs font-medium" id="riskBadge">High Risk</span>
+                </div>
+                <p class="text-[#94a3b8]" id="caseDescription">Multiple deposits from 47 different accounts</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="window.location.href='dashboard.html'" class="btn-outline">
+                    <i class="fa-solid fa-times mr-2"></i> Cancel
+                </button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Left Column: Case Details -->
+            <div class="col-span-1">
+                <div class="glass-card p-6 mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Case Details</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm text-[#94a3b8] block mb-1">Case ID</label>
+                            <div class="text-white font-medium" id="detailId">C101</div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-[#94a3b8] block mb-1">Customer Type</label>
+                            <div class="text-white" id="detailCustomerType">Individual</div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-[#94a3b8] block mb-1">Transaction Amount</label>
+                            <div class="text-white font-medium" id="detailAmount">₹950,000</div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-[#94a3b8] block mb-1">Risk Category</label>
+                            <div><span class="px-3 py-1 rounded-full text-xs font-medium" id="detailRisk">High</span></div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-[#94a3b8] block mb-1">Flag Reason</label>
+                            <div class="text-white" id="detailFlag">Structuring / Layering</div>
+                        </div>
+                        
+                        <div>
+                            <label class="text-sm text-[#94a3b8] block mb-1">Description</label>
+                            <div class="text-white text-sm" id="detailDesc">Customer receives ₹50 lakhs from 47 different accounts in one week, then immediately transfers it abroad.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6">
+                    <h3 class="text-lg font-semibold mb-4">Retrieved Template</h3>
+                    <div class="bg-[rgba(255,255,255,0.02)] p-4 rounded-lg text-sm text-[#94a3b8] border-l-2 border-[#06b6d4]" id="retrievedTemplate">
+                        High Risk - Multiple Accounts Pattern
+                    </div>
+                    <p class="text-xs text-[#4b5563] mt-3">
+                        <i class="fa-regular fa-circle-check text-[#06b6d4] mr-1"></i>
+                        Template retrieved from ChromaDB via RAG
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Right Column: SAR Generator -->
+            <div class="col-span-2">
+                <div class="glass-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">SAR Narrative Generator</h3>
+                        <div class="flex gap-2">
+                            <button onclick="generateSAR()" class="btn-gradient" id="generateBtn">
+                                <i class="fa-solid fa-robot mr-2"></i> Generate SAR
+                            </button>
+                            <button onclick="saveDraft()" class="btn-outline">
+                                <i class="fa-regular fa-floppy-disk mr-2"></i> Save Draft
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading indicator -->
+                    <div id="loadingIndicator" class="hidden flex justify-center items-center py-12">
+                        <div class="loader"></div>
+                        <span class="ml-3 text-[#94a3b8]">Generating SAR with Gemini AI...</span>
+                    </div>
+                    
+                    <!-- SAR Output -->
+                    <textarea id="sarOutput" class="sar-textarea mb-4" placeholder="Click 'Generate SAR' to create a compliance-ready narrative..."></textarea>
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between items-center">
+                        <div class="flex gap-2">
+                            <button onclick="approveSAR()" class="bg-green-500/10 text-green-500 border border-green-500/20 rounded-lg px-4 py-2 text-sm hover:bg-green-500/20 transition">
+                                <i class="fa-regular fa-circle-check mr-2"></i> Approve
+                            </button>
+                            <button onclick="exportPDF()" class="bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20 rounded-lg px-4 py-2 text-sm hover:bg-[#06b6d4]/20 transition">
+                                <i class="fa-regular fa-file-pdf mr-2"></i> Export PDF
+                            </button>
+                        </div>
+                        <div class="text-xs text-[#4b5563]">
+                            <span id="version">Version: 1.0</span> · 
+                            <span id="status">Draft</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Explainability Trace -->
+                    <div class="mt-6 pt-4 border-t border-[rgba(255,255,255,0.05)]">
+                        <details>
+                            <summary class="text-sm text-[#94a3b8] cursor-pointer hover:text-[#f8fafc]">
+                                <i class="fa-regular fa-eye mr-2"></i> View Generation Trace (Explainability)
+                            </summary>
+                            <div class="mt-3 text-xs text-[#4b5563] bg-[rgba(255,255,255,0.02)] p-3 rounded-lg" id="traceInfo">
+                                <p><span class="text-[#94a3b8]">Retrieved Template ID:</span> TEMP-HIGH-001</p>
+                                <p><span class="text-[#94a3b8]">Prompt Tokens:</span> 450</p>
+                                <p><span class="text-[#94a3b8]">Completion Tokens:</span> 280</p>
+                                <p><span class="text-[#94a3b8]">Model:</span> Gemini 1.5 Pro</p>
+                                <p><span class="text-[#94a3b8]">Timestamp:</span> <span id="genTimestamp">Not generated yet</span></p>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    // Get case ID from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const caseId = urlParams.get('id');
+    
+    // Load case data
+    let currentCase = null;
+    let sarVersions = JSON.parse(localStorage.getItem('sarVersions')) || {};
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        loadCaseData();
+    });
+    
+    function loadCaseData() {
+        const cases = JSON.parse(localStorage.getItem('cases')) || [];
+        currentCase = cases.find(c => c.id === caseId);
+        
+        if (!currentCase) {
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        
+        // Update UI with case data
+        document.getElementById('caseId').textContent = `Case ${currentCase.id}`;
+        document.getElementById('riskBadge').textContent = currentCase.risk_category;
+        document.getElementById('riskBadge').className = `px-3 py-1 rounded-full text-xs font-medium risk-${currentCase.risk_category.toLowerCase()}`;
+        document.getElementById('caseDescription').textContent = currentCase.flag_reason || 'Suspicious activity detected';
+        
+        document.getElementById('detailId').textContent = currentCase.id;
+        document.getElementById('detailCustomerType').textContent = currentCase.customer_type;
+        document.getElementById('detailAmount').textContent = `₹${parseFloat(currentCase.amount).toLocaleString()}`;
+        document.getElementById('detailRisk').textContent = currentCase.risk_category;
+        document.getElementById('detailRisk').className = `px-3 py-1 rounded-full text-xs font-medium risk-${currentCase.risk_category.toLowerCase()}`;
+        document.getElementById('detailFlag').textContent = currentCase.flag_reason || 'Suspicious pattern';
+        document.getElementById('detailDesc').textContent = currentCase.description || currentCase.flag_reason || 'No description available';
+        
+        // Set appropriate template based on risk
+        const templates = {
+            'High': 'High Risk - Multiple Accounts Pattern / Structuring',
+            'Medium': 'Medium Risk - Threshold Avoidance Pattern',
+            'Low': 'Low Risk - Geographic Risk / Watchlist'
+        };
+        document.getElementById('retrievedTemplate').textContent = templates[currentCase.risk_category] || 'Standard AML Template';
+        
+        // Load existing SAR if any
+        if (sarVersions[currentCase.id]) {
+            const versions = sarVersions[currentCase.id];
+            const latest = versions[versions.length - 1];
+            document.getElementById('sarOutput').value = latest.text;
+            document.getElementById('version').textContent = `Version: ${latest.version}`;
+            document.getElementById('status').textContent = latest.status;
+        }
+    }
+    
+    async function generateSAR() {
+        const generateBtn = document.getElementById('generateBtn');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const sarOutput = document.getElementById('sarOutput');
+        
+        // Show loading
+        generateBtn.disabled = true;
+        loadingIndicator.classList.remove('hidden');
+        sarOutput.value = '';
+        
+        // Log action
+        logAction('Started SAR generation for case ' + currentCase.id);
+        
+        try {
+            // Construct prompt
+            const prompt = constructPrompt();
+            
+            // Call Gemini API
+            const sarText = await callGeminiAPI(prompt);
+            
+            // Display SAR
+            sarOutput.value = sarText;
+            
+            // Update timestamp
+            document.getElementById('genTimestamp').textContent = new Date().toLocaleString();
+            
+            // Save to versions
+            saveSARVersion(sarText, 'Draft');
+            
+            // Log success
+            logAction('Generated SAR for case ' + currentCase.id);
+            
+        } catch (error) {
+            console.error('Error generating SAR:', error);
+            sarOutput.value = 'Error generating SAR. Please try again.';
+        } finally {
+            // Hide loading
+            generateBtn.disabled = false;
+            loadingIndicator.classList.add('hidden');
+        }
+    }
+    
+    function constructPrompt() {
+        // Risk-based templates
+        const templates = {
+            'High': `Suspicious Activity Report - HIGH RISK TRANSACTION
+        
+IDENTIFYING INFORMATION:
+- Case ID: ${currentCase.id}
+- Customer Type: ${currentCase.customer_type}
+- Transaction Amount: ₹${currentCase.amount}
+
+PATTERN IDENTIFIED:
+${currentCase.description || currentCase.flag_reason}
+
+RISK INDICATORS:
+• Transaction value exceeds threshold (₹500,000+)
+• Multiple accounts involved in fund consolidation
+• Immediate offshore transfer following credit
+• Pattern consistent with layering technique
+
+REGULATORY CONTEXT:
+This pattern is consistent with money laundering typologies involving structuring, layering, and potential shell company activity as outlined in FinCEN advisory FIN-2019-A003.`,
+
+            'Medium': `Suspicious Activity Report - MEDIUM RISK TRANSACTION
+        
+IDENTIFYING INFORMATION:
+- Case ID: ${currentCase.id}
+- Customer Type: ${currentCase.customer_type}
+- Transaction Amount: ₹${currentCase.amount}
+
+PATTERN IDENTIFIED:
+${currentCase.description || currentCase.flag_reason}
+
+RISK INDICATORS:
+• Transaction amount near reporting threshold
+• Unusual pattern inconsistent with customer profile
+• Potential threshold avoidance behavior
+
+REGULATORY CONTEXT:
+Transaction pattern warrants further review as it may indicate an attempt to avoid reporting requirements under the Bank Secrecy Act.`,
+
+            'Low': `Suspicious Activity Report - LOW RISK TRANSACTION
+        
+IDENTIFYING INFORMATION:
+- Case ID: ${currentCase.id}
+- Customer Type: ${currentCase.customer_type}
+- Transaction Amount: ₹${currentCase.amount}
+
+PATTERN IDENTIFIED:
+${currentCase.description || currentCase.flag_reason}
+
+RISK INDICATORS:
+• Transaction involves high-risk jurisdiction
+• No clear economic purpose identified
+
+REGULATORY CONTEXT:
+While the transaction amount is below typical reporting thresholds, the destination jurisdiction and transaction pattern warrant documentation for monitoring purposes.`
+        };
+        
+        // Get base template
+        let sarNarrative = templates[currentCase.risk_category] || templates['Medium'];
+        
+        // Add completion based on risk level
+        const completions = {
+            'High': `\n\nNARRATIVE DESCRIPTION:
+On ${new Date().toLocaleDateString()}, analysis revealed that customer ${currentCase.customer_type} received funds aggregating ₹${currentCase.amount} from 47 distinct accounts over a 7-day period. Subsequently, within 24 hours of the final credit, the total amount was transferred to an offshore account in a jurisdiction with weak AML controls.
+
+This pattern is indicative of layering, a common money laundering technique where funds are moved through multiple accounts to obscure their origin and ownership. The involvement of numerous funding sources followed by rapid outbound transfer suggests the customer may be acting as a money mule or facilitating third-party fund movement.
+
+The transaction value significantly exceeds the customer's stated income profile based on KYC records. No legitimate business or personal rationale for this transaction pattern has been provided by the customer when contacted.`,
+
+            'Medium': `\n\nNARRATIVE DESCRIPTION:
+On ${new Date().toLocaleDateString}, the customer engaged in a transaction of ₹${currentCase.amount}, which is just below the reporting threshold. This follows a pattern of similar transactions observed over the past 30 days.
+
+The cumulative activity over the past 90 days totals approximately ₹1.2 million, which is inconsistent with the customer's stated occupation and income level as documented during account opening.
+
+This pattern may represent an attempt to avoid triggering reporting requirements while moving significant funds through the financial system.`,
+
+            'Low': `\n\nNARRATIVE DESCRIPTION:
+On ${new Date().toLocaleDateString}, the customer initiated an international wire transfer of ₹${currentCase.amount} to a jurisdiction identified as high-risk for money laundering activities according to FATF statements.
+
+While the transaction amount is modest and the customer's account history does not show other unusual patterns, the destination jurisdiction and the customer's lack of prior international transaction history warrant documentation.
+
+The customer stated the purpose was for "family support," but provided no supporting documentation when requested.`
+        };
+        
+        sarNarrative += completions[currentCase.risk_category] || completions['Medium'];
+        
+        // Add footer
+        sarNarrative += `\n\nCONCLUSION:
+Based on the analysis above, this transaction exhibits characteristics consistent with ${currentCase.risk_category === 'High' ? 'potential money laundering activity requiring immediate further investigation' : currentCase.risk_category === 'Medium' ? 'suspicious activity warranting enhanced monitoring' : 'risk factors that should be documented for pattern recognition'}. 
+
+This SAR is being filed to document the activity and ensure compliance with AML reporting obligations. Further investigation is recommended to determine the full extent of related transactions and counterparties.
+
+FILING INSTITUTION: SAR Shield Demo Bank
+PREPARER: John Doe, AML Analyst
+DATE: ${new Date().toLocaleDateString()}`;
+        
+        return sarNarrative;
+    }
+    
+    async function callGeminiAPI(prompt) {
+        // In a real implementation, you would call the actual Gemini API
+        // For demo purposes, we'll simulate the API call with a timeout
+        
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(prompt);
+            }, 2000);
+        });
+        
+        /* Actual Gemini API implementation (uncomment and add your API key)
+        const API_KEY = 'YOUR_GEMINI_API_KEY';
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
+        
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: "Generate a professional Suspicious Activity Report (SAR) in formal regulatory tone using the following details:\n\n" + prompt
+                    }]
+                }]
+            })
+        });
+        
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+        */
+    }
+    
+    function saveSARVersion(text, status) {
+        if (!sarVersions[currentCase.id]) {
+            sarVersions[currentCase.id] = [];
+        }
+        
+        const versionNum = sarVersions[currentCase.id].length + 1;
+        
+        sarVersions[currentCase.id].push({
+            version: versionNum + '.0',
+            text: text,
+            status: status,
+            timestamp: new Date().toISOString(),
+            generatedBy: 'John Doe'
+        });
+        
+        localStorage.setItem('sarVersions', JSON.stringify(sarVersions));
+        
+        document.getElementById('version').textContent = `Version: ${versionNum}.0`;
+        document.getElementById('status').textContent = status;
+    }
+    
+    function saveDraft() {
+        const text = document.getElementById('sarOutput').value;
+        if (text.trim()) {
+            saveSARVersion(text, 'Draft');
+            logAction('Saved draft SAR for case ' + currentCase.id);
+            alert('Draft saved successfully!');
+        }
+    }
+    
+    function approveSAR() {
+        const text = document.getElementById('sarOutput').value;
+        if (text.trim()) {
+            saveSARVersion(text, 'Approved');
+            
+            // Update case status
+            const cases = JSON.parse(localStorage.getItem('cases')) || [];
+            const caseIndex = cases.findIndex(c => c.id === currentCase.id);
+            if (caseIndex !== -1) {
+                cases[caseIndex].status = 'Approved';
+                localStorage.setItem('cases', JSON.stringify(cases));
+            }
+            
+            // Create submission for admin
+            const submissions = JSON.parse(localStorage.getItem('submissions')) || [];
+            submissions.push({
+                caseId: currentCase.id,
+                sarText: text,
+                submittedBy: 'John Doe',
+                submittedAt: new Date().toISOString(),
+                status: 'Pending Review'
+            });
+            localStorage.setItem('submissions', JSON.stringify(submissions));
+            
+            logAction('Approved SAR for case ' + currentCase.id + ' and submitted to admin');
+            alert('SAR approved and submitted to admin for review!');
+        }
+    }
+    
+    function exportPDF() {
+        const text = document.getElementById('sarOutput').value;
+        if (!text.trim()) {
+            alert('No SAR to export');
+            return;
+        }
+        
+        // Using jsPDF
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Add title
+        doc.setFontSize(16);
+        doc.text(`SAR Report - Case ${currentCase.id}`, 20, 20);
+        
+        // Add metadata
+        doc.setFontSize(10);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 20, 30);
+        doc.text(`Risk Level: ${currentCase.risk_category}`, 20, 35);
+        
+        // Add SAR text (split into lines)
+        doc.setFontSize(11);
+        const lines = doc.splitTextToSize(text, 170);
+        doc.text(lines, 20, 45);
+        
+        // Save PDF
+        doc.save(`SAR_Case_${currentCase.id}.pdf`);
+        
+        logAction('Exported SAR as PDF for case ' + currentCase.id);
+    }
+    
+    function logAction(action) {
+        const logs = JSON.parse(localStorage.getItem('auditLogs')) || [];
+        logs.unshift({
+            timestamp: new Date().toLocaleTimeString(),
+            user: 'John Doe (Analyst)',
+            action: action,
+            caseId: currentCase?.id || '-'
+        });
+        localStorage.setItem('auditLogs', JSON.stringify(logs.slice(0, 20)));
+    }
+</script>
+
+</body>
+</html>
